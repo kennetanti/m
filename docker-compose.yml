@@ -1,0 +1,22 @@
+version: '2'
+services:
+  rvdb:
+    image: rethinkdb
+    ports:
+      - "28015:28015"
+      - "8080:8080"
+    volumes:
+      - ./rethinkdata:/data
+    networks:
+      - nignet
+    command: rethinkdb --bind all -d /data 
+    restart: always
+  pythong:
+    build: pythong/
+    networks:
+      - nignet
+    restart: always
+      
+networks:
+  nignet:
+    driver: bridge
