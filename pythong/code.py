@@ -14,7 +14,7 @@ class do_thing(rrv.reAct):
 	job_name = "thing"
 	
 	def proc(self, data):
-		print repr(data)
+		print(repr(data))
 		data["thaaang"] = data["thang"]*2
 		self.to_model.push(data)
 
@@ -24,7 +24,7 @@ class do_thang(rrv.reAct):
 	job_name = "thaaang"
 	
 	def proc(self, data):
-		print repr(data)
+		print(repr(data))
 		
 thang = do_thing()
 thang.start()
@@ -38,4 +38,3 @@ t1 = testone()
 
 for x in range(100):
 	t1.push({"thang": x})
-	time.sleep(1)

@@ -1,5 +1,8 @@
-import rethinkdb as r
+from rethinkdb import RethinkDB
+r = RethinkDB()
 from threading import Thread
+
+r.set_loop_type("asyncio")
 
 class reModel:
 	db_name="na"
@@ -17,11 +20,13 @@ class reModel:
 	table_add = lambda s: r.db(s.db_name).table_create(s.table_name).run(s.con)
 	
 	def __init__(s, host="rvdb", port=28015):
-		s.con = r.connect(host=host, port=port)
-		if s.db_name not in s.dbs():
-			s.db_add()
-		if s.table_name not in s.tables():
-			s.table_add()
+		s.asyncinit(host, port)
+	async def asyncinit(s,host,port):
+		s.con = await r.connect(host=host, port=port)
+		if s.db_name not in await s.dbs():
+			await s.db_add()
+		if s.table_name not in await s.tables():
+			await s.table_add()
 		
 class reJob(reModel):
 	db_name="rejobs"
@@ -39,7 +44,9 @@ class reAct(Thread):
 		self.init_jobmodel()
 		Thread.__init__(self)
 	def run(self):
-		for change in self.from_model.feed():
+		self.asyncrun(self)
+	async def asyncrun(self):
+		async for change in self.from_model.feed():
 			row = change["new_val"]
 			if self.try_claim(row["id"]):
 				self.proc(row)
