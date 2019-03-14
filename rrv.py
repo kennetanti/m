@@ -16,7 +16,7 @@ class reModel:
 	tables = lambda s: r.db(s.db_name).table_list().run(s.con)
 	table_add = lambda s: r.db(s.db_name).table_create(s.table_name).run(s.con)
 	
-	def __init__(s, host=None, port=28015):
+	def __init__(s, host="rvdb", port=28015):
 		s.con = r.connect(host=host, port=port)
 		if s.db_name not in s.dbs():
 			s.db_add()
