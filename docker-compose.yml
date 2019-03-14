@@ -2,9 +2,6 @@ version: '2'
 services:
   rvdb:
     image: rethinkdb
-    ports:
-      - "28015:28015"
-      - "8080:8080"
     volumes:
       - ./rethinkdata:/data
     networks:
