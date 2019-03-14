@@ -8,21 +8,29 @@ class reModel:
 	db_name="na"
 	table_name="na"
 	
-	table = lambda s: r.db(s.db_name).table(s.table_name)
+	async def table(s):
+		return r.db(s.db_name).table(s.table_name)
 	
-	feed = lambda s: s.table().changes(include_initial=True).run(s.con)
-	push = lambda s,d: s.table().insert(d).run(s.con)
-	delete = lambda s,w: s.table().filter(w).delete().run(s.con)
+	async def feed(s): 
+		return s.table().changes(include_initial=True).run(await s.con)
+	async def push(s,d):
+		return s.table().insert(d).run(await s.con)
+	async def delete(s,w):
+		return s.table().filter(w).delete().run(await s.con)
 	
-	dbs = lambda s: r.db_list().run(s.con)
-	db_add = lambda s: r.db_create(s.db_name).run(s.con)
-	tables = lambda s: r.db(s.db_name).table_list().run(s.con)
-	table_add = lambda s: r.db(s.db_name).table_create(s.table_name).run(s.con)
+	async def dbs(s):
+		return r.db_list().run(await s.con)
+	async def db_add(s):
+		return r.db_create(s.db_name).run(await s.con)
+	async def tables(s):
+		return r.db(s.db_name).table_list().run(await s.con)
+	async def table_add(s):
+		return r.db(s.db_name).table_create(s.table_name).run(await s.con)
 	
 	def __init__(s, host="rvdb", port=28015):
 		s.asyncinit(host, port)
 	async def asyncinit(s,host,port):
-		s.con = await r.connect(host=host, port=port)
+		s.con = r.connect(host=host, port=port)
 		if s.db_name not in await s.dbs():
 			await s.db_add()
 		if s.table_name not in await s.tables():
